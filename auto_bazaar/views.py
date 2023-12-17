@@ -1,6 +1,8 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import CreateView,DetailView, UpdateView
-from .models import Car, Brand
+from .models import Car, Brand, Comment
+from .forms import CommentForm
+from django.urls import reverse_lazy
 
 # Create your views from here
 class CarListView(CreateView):
@@ -13,6 +15,28 @@ class CarDetailView(DetailView):
     model = Car
     pk_url_kwarg = 'id'
     template_name = 'car_details.html'
+
+    def post(self, request, *args, **kwargs):
+        comment_form = CommentForm(data=request.POST)
+        car = self.get_object()
+
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.user = self.request.user
+            new_comment.car = car
+            new_comment.save()
+
+        return self.get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        car = self.object
+        comments = car.comments.all()  # Assuming you have a related_name='comment_set' in your Comment model
+        comment_form = CommentForm()
+
+        context['comments'] = comments
+        context['comment_form'] = comment_form
+        return context
 
 class PurchaseCarView(UpdateView):
     def post(self, request, id):
@@ -28,3 +52,4 @@ class PurchaseCarView(UpdateView):
         else:
             # If the car is out of stock, you might want to handle this case appropriately
             return render(request, 'out_of_stock.html')  # Create this template
+        

@@ -20,10 +20,11 @@ class Car(models.Model):
         return self.name
 
 class Comment(models.Model):
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='comments')
+    name = models.CharField(max_length=100, default='abul')
+    email = models.EmailField(default='example@example.com')
     text = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return self.text
+        return self.name

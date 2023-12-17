@@ -6,8 +6,8 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ['name','email','text']
         labels = {
-            'name': 'Your Name',
-            'email': 'Your Email',
+            'name': 'Full Name',
+            'email': 'Email Address',
             'text': 'Comments',  
         }
     def __init__(self, *args, **kwargs):

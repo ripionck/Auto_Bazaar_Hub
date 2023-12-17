@@ -21,8 +21,8 @@ class Car(models.Model):
 
 class Comment(models.Model):
     car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='comments')
-    name = models.CharField(max_length=100, default='abul')
-    email = models.EmailField(default='example@example.com')
+    name = models.CharField(max_length=100, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
     text = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     

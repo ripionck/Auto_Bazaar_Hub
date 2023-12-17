@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.views.generic import CreateView,DetailView, UpdateView
-from .models import Car, Brand, Comment
+from django.views.generic import CreateView,DetailView, UpdateView, ListView
+from .models import Car, Brand
 from .forms import CommentForm
 from django.urls import reverse_lazy
 
@@ -11,6 +11,24 @@ class CarListView(CreateView):
         brands = Brand.objects.all()
         return render(request, 'car_list.html', {'cars': cars, 'brands': brands})
 
+class FilteredCarsListView(ListView):
+    model = Car
+    template_name = 'home.html'
+    context_object_name = 'cars'
+
+    def get_queryset(self):
+        brand_id = self.kwargs.get('brand_id')
+        if brand_id:
+            queryset = Car.objects.filter(brand__id=brand_id)
+        else:
+            queryset = Car.objects.all()
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['brands'] = Brand.objects.all()
+        return context
+    
 class CarDetailView(DetailView):
     model = Car
     pk_url_kwarg = 'id'
@@ -22,16 +40,18 @@ class CarDetailView(DetailView):
 
         if comment_form.is_valid():
             new_comment = comment_form.save(commit=False)
-            new_comment.user = self.request.user
+            new_comment.user = request.user  # Assuming you have a user associated with the request
             new_comment.car = car
             new_comment.save()
 
-        return self.get(request, *args, **kwargs)
+            # Redirect to the same page to avoid form resubmission
+            return redirect('car_detail', id=car.id)
 
+        return self.get(request, *args, **kwargs)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         car = self.object
-        comments = car.comments.all()  # Assuming you have a related_name='comment_set' in your Comment model
+        comments = car.comments.all()  # Assuming you have a related_name='comments' in your Comment model
         comment_form = CommentForm()
 
         context['comments'] = comments

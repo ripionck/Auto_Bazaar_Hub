@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+  {% if messages %}
+    {% for m in messages %}<p class="bg-success p-3 text-white">{{ m }}</p>{% endfor %}
+  {% endif %}
+  <h3>
+    Welcome to <span class="text-primary">{{ user }}</span> Profile
+  </h3>
+  <br />
+{% endblock %}

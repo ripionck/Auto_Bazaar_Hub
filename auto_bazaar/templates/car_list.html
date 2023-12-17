@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Car Listings</h1>
+  <form method="get" action="{% url 'car_list' %}">
+    {% csrf_token %}
+    <label for="brand_filter">Filter by Brand:</label>
+    <select name="brand_filter" id="brand_filter">
+      <option value="">All Brands</option>
+      {% for brand in brands %}<option value="{{ brand.id }}">{{ brand.name }}</option>{% endfor %}
+    </select>
+    <button type="submit">Apply Filter</button>
+  </form>
+  <ul>
+    {% for car in cars %}
+      <li>
+        <img src="{{ car.image.url }}" alt="{{ car.name }} Image">
+        <h2>{{ car.name }}</h2>
+        <p>{{ car.description }}</p>
+        <p>Price: ${{ car.price }}</p>
+        {% if user.is_authenticated %}
+          <a href="{% url 'car_detail' car.id %}">View Details</a>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock content %}

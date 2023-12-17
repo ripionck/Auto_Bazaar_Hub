@@ -4,15 +4,9 @@
   {% if messages %}
     {% for m in messages %}<p class="bg-success p-3 text-white">{{ m }}</p>{% endfor %}
   {% endif %}
-  <h3>
-    <a href="{% url 'edit_profile' %}" class="btn btn-warning">Edit Profile</a>
-  </h3>
-  <br />
-  <h2>Order History</h2>
-  {% comment %} <ul>
-    <li>{{ order.car.name }} - {{ order.purchase_date }}</li>{% endfor %}
-  </ul> {% endcomment %}
-  <div class="d-flex flex-wrap justify-content-center px-5 pt-3">
+  <a href="{% url 'edit_profile' %}" class="btn btn-warning ms-5 mt-3">Edit Profile</a>
+  <h3 class="text-center mt-4">Order History</h3>
+  <div class="d-flex flex-wrap justify-content-center px-5 pt-2">
     {% for order in orders %}
       <div class="col-sm-3">
         <div class="card m-2" style="width: 18rem;">
@@ -22,9 +16,10 @@
                style="height: 240px">
           <div class="card-body">
             <h5 class="card-title">{{ order.car.name }}</h5>
-            <p class="fw-bold text-warning">{{ order.car.brand }}</p>
+            <p style="color:#D6A439; font-size: 18px">{{ order.car.brand }}</p>
             <p class="fst-italic">${{ order.car.price }}</p>
-            <a class="btn btn-warning" href="{% url 'car_detail' order.car.id %}">View Details</a>
+            <a class="btn btn-outline-warning"
+               href="{% url 'car_detail' order.car.id %}">View Details</a>
           </div>
         </div>
       </div>

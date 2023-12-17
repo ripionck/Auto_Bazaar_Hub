@@ -8,15 +8,15 @@
            style="width: 100%">
     </div>
     <div class="col-6 p-5">
-      <h5>{{ car.name }} Details</h5>
+      <h5 class="fs-3">{{ car.name }}</h5>
       <p>Price: ${{ car.price }}</p>
-      <p>Quantity: ${{ car.quantity }}</p>
-      <p>Brand: {{ car.brand.name }}</p>
+      <p>Quantity: {{ car.quantity }}</p>
+      <p class="fs-5">Brand: {{ car.brand.name }}</p>
       <p>{{ car.description }}</p>
       {% if user.is_authenticated %}
         <form method="post" action="{% url 'purchase_car' id=car.id %}">
           {% csrf_token %}
-          <button class="btn btn-warning" type="submit">Buy Now</button>
+          <button class="btn btn-outline-warning" type="submit">Buy Now</button>
         </form>
       {% endif %}
     </div>
@@ -38,7 +38,7 @@
       <form method="post">
         {% csrf_token %}
         {{ comment_form | crispy }}
-        <button class="btn btn-primary">Submit</button>
+        <button class="btn btn-outline-warning">Submit</button>
       </form>
     </div>
   </div>

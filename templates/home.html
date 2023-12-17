@@ -6,11 +6,11 @@
   {% endif %}
   <div class="d-flex align-items-center">
     <div class="col-6 text-center p-5">
-      <h3>The Future is Sustainable</h3>
+      <h3 class="fs-2 text-warning">The Future is Sustainable</h3>
       <p>
         We’re building a world powered by solar energy, running on batteries and transported by electric vehicles. Explore the most recent impact of our products, people and supply chain.
       </p>
-      <button>Explore Impact</button>
+      <button class="btn btn-small btn-outline-warning px-3">Explore Impact</button>
     </div>
     <div class="col-6">
       <img src="{% static 'images/showroom.jpg' %}"
@@ -19,10 +19,10 @@
     </div>
   </div>
   <div class="d-flex flex-wrap gap-3 justify-content-center mt-5">
-    <a class="btn btn-small btn-warning"
+    <a class="btn btn-small btn-outline-warning"
        href="{% url 'filtered_cars_all' %}">All</a>
     {% for brand in brands %}
-      <a class="btn btn-small btn-warning"
+      <a class="btn btn-small btn-outline-warning"
          href="{% url 'filtered_cars' brand.id %}">{{ brand.name }}</a>
     {% endfor %}
   </div>
@@ -35,11 +35,11 @@
                class="card-img-top"
                alt="{{ car.name }} Image"
                style="height: 240px">
-          <div class="card-body">
+          <div class="card-body" style="line-height: 10px">
             <h5 class="card-title">{{ car.name }}</h5>
-            <p class="fw-bold text-warning">{{ car.brand }}</p>
+            <p style="color:#D6A439; font-size: 18px">{{ car.brand }}</p>
             <p class="fst-italic">${{ car.price }}</p>
-            <a class="btn btn-warning" href="{% url 'car_detail' car.id %}">View Details</a>
+            <a class="btn btn-outline-warning" href="{% url 'car_detail' car.id %}">View Details</a>
           </div>
         </div>
       </div>

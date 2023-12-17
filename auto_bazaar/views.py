@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import CreateView,DetailView, UpdateView, ListView
-from .models import Car, Brand
+from .models import Car, Brand, Order
 from .forms import CommentForm
-from django.urls import reverse_lazy
+
 
 # Create your views from here
 class CarListView(CreateView):
@@ -29,41 +29,51 @@ class FilteredCarsListView(ListView):
         context['brands'] = Brand.objects.all()
         return context
     
-class CarDetailView(DetailView):
+class CarDetailView(DetailView, CreateView):
     model = Car
-    pk_url_kwarg = 'id'
     template_name = 'car_details.html'
+    context_object_name = 'car'
+    form_class = CommentForm
 
-    def post(self, request, *args, **kwargs):
-        comment_form = CommentForm(data=request.POST)
-        car = self.get_object()
-
-        if comment_form.is_valid():
-            new_comment = comment_form.save(commit=False)
-            new_comment.user = request.user  # Assuming you have a user associated with the request
-            new_comment.car = car
-            new_comment.save()
-
-            # Redirect to the same page to avoid form resubmission
-            return redirect('car_detail', id=car.id)
-
-        return self.get(request, *args, **kwargs)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        car = self.object
-        comments = car.comments.all()  # Assuming you have a related_name='comments' in your Comment model
-        comment_form = CommentForm()
+        car = self.get_object()
 
-        context['comments'] = comments
-        context['comment_form'] = comment_form
+        if car:
+            context['car'] = car
+            comments = car.comments.all() if hasattr(car, 'comments') else []
+            comment_form = CommentForm()
+
+            context['comments'] = comments
+            context['comment_form'] = comment_form
+
         return context
 
+    def form_valid(self, form):
+        car = self.get_object()
+        
+        if car:
+            form.instance.user = self.request.user
+            form.instance.car = car
+            form.save()
+            return redirect('car_detail', pk=car.pk)
+        else:
+            # Handle the case when the car does not exist
+            return redirect('homepage')  
+
 class PurchaseCarView(UpdateView):
-    def post(self, request, id):
-        car = get_object_or_404(Car, pk=id)
+    def post(self, request, *args, **kwargs):
+        car_id = kwargs.get('id')
+        
+        # Use get_object_or_404 to retrieve the Car object or return a 404 response
+        car = get_object_or_404(Car, id=car_id)
 
         # Check if the car is in stock
         if car.quantity > 0:
+            # Create an order record for the user
+            order = Order(user=request.user, car=car)
+            order.save()
+
             # Reduce the quantity by one and save the changes
             car.quantity -= 1
             car.save()
@@ -71,5 +81,4 @@ class PurchaseCarView(UpdateView):
             return redirect('car_detail', pk=car.id)
         else:
             # If the car is out of stock, you might want to handle this case appropriately
-            return render(request, 'out_of_stock.html')  # Create this template
-        
+            return render(request, 'out_of_stock.html')

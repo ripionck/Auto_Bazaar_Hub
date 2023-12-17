@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
 
 class UserRegistrationForm(UserCreationForm):
@@ -21,4 +21,13 @@ class UserRegistrationForm(UserCreationForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
        
+class ChangeUserForm(UserChangeForm):
+    password = None
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Remove help text for the username field
+        self.fields['username'].help_text = None

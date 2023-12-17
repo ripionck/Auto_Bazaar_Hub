@@ -5,7 +5,29 @@
     {% for m in messages %}<p class="bg-success p-3 text-white">{{ m }}</p>{% endfor %}
   {% endif %}
   <h3>
-    Welcome to <span class="text-primary">{{ user }}</span> Profile
+    <a href="{% url 'edit_profile' %}" class="btn btn-warning">Edit Profile</a>
   </h3>
   <br />
+  <h2>Order History</h2>
+  {% comment %} <ul>
+    <li>{{ order.car.name }} - {{ order.purchase_date }}</li>{% endfor %}
+  </ul> {% endcomment %}
+  <div class="d-flex flex-wrap justify-content-center px-5 pt-3">
+    {% for order in orders %}
+      <div class="col-sm-3">
+        <div class="card m-2" style="width: 18rem;">
+          <img src="{{ order.car.image.url }}"
+               class="card-img-top"
+               alt="{{ order.car.name }} Image"
+               style="height: 240px">
+          <div class="card-body">
+            <h5 class="card-title">{{ order.car.name }}</h5>
+            <p class="fw-bold text-warning">{{ order.car.brand }}</p>
+            <p class="fst-italic">${{ order.car.price }}</p>
+            <a class="btn btn-warning" href="{% url 'car_detail' order.car.id %}">View Details</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
 {% endblock %}

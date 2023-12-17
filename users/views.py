@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
-from django.views.generic import CreateView, RedirectView
+from django.views.generic import CreateView, RedirectView, UpdateView
+from django.views.generic.detail import DetailView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
 from django.contrib import messages
 from . import forms
+from auto_bazaar.models import Order
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 
@@ -56,5 +58,23 @@ class LogoutView(RedirectView):
             
         return super().get_redirect_url()
     
-def profile(request):
-    return render(request, 'profile.html')
+class ProfileView(DetailView):
+    def get(self, request):
+        orders = Order.objects.filter(user=request.user)
+        return render(request, 'profile.html', {'orders': orders})
+
+class EditProfileView(UpdateView):
+    template_name = 'edit_profile.html'
+
+    def get(self, request, *args, **kwargs):
+        profile_form = forms.ChangeUserForm(instance=request.user)
+        return render(request, self.template_name, {'form': profile_form})
+
+    def post(self, request, *args, **kwargs):
+        profile_form = forms.ChangeUserForm(request.POST, instance=request.user)
+        if profile_form.is_valid():
+            profile_form.save()
+            messages.success(request, 'Profile Updated Successfully')
+            return redirect('user_profile')
+
+        return render(request, self.template_name, {'form': profile_form})

@@ -14,7 +14,7 @@
       <p>Brand: {{ car.brand.name }}</p>
       <p>{{ car.description }}</p>
       {% if user.is_authenticated %}
-        <form method="post" action="{% url 'purchase_car' car.id %}">
+        <form method="post" action="{% url 'purchase_car' id=car.id %}">
           {% csrf_token %}
           <button class="btn btn-warning" type="submit">Buy Now</button>
         </form>

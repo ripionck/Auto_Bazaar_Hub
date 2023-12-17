@@ -23,6 +23,7 @@ class Comment(models.Model):
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
+    created_on = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
         return self.text

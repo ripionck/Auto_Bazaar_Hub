@@ -24,7 +24,7 @@ class AddUserCreateView(CreateView):
 class UserLoginView(LoginView):
     template_name = 'register_user.html'
     def get_success_url(self):
-        return reverse_lazy('user_profile')
+        return reverse_lazy('homepage')
     def form_valid(self, form):
         messages.success(self.request, 'Logged in Successful')
         return super().form_valid(form)
@@ -51,7 +51,9 @@ class LogoutView(RedirectView):
         Log out the user and redirect to the target URL.
         """
         if self.request.user.is_authenticated:
+            messages.success(self.request, 'Logged out Successful')
             logout(self.request)
+            
         return super().get_redirect_url()
     
 def profile(request):

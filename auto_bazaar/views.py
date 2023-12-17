@@ -1,5 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import CreateView,DetailView, UpdateView, ListView
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from .models import Car, Brand, Order
 from .forms import CommentForm
 
@@ -59,8 +61,9 @@ class CarDetailView(DetailView, CreateView):
             return redirect('car_detail', pk=car.pk)
         else:
             # Handle the case when the car does not exist
-            return redirect('homepage')  
-
+            return redirect('homepage') 
+         
+@method_decorator(login_required, name='dispatch')
 class PurchaseCarView(UpdateView):
     def post(self, request, *args, **kwargs):
         car_id = kwargs.get('id')

@@ -3,6 +3,8 @@ from django.views.generic import CreateView, RedirectView, UpdateView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.contrib import messages
 from . import forms
 from auto_bazaar.models import Order
@@ -63,6 +65,7 @@ class ProfileView(DetailView):
         orders = Order.objects.filter(user=request.user)
         return render(request, 'profile.html', {'orders': orders})
 
+@method_decorator(login_required, name='dispatch')
 class EditProfileView(UpdateView):
     template_name = 'edit_profile.html'
 

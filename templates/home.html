@@ -1,8 +1,23 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
   {% if messages %}
     {% for m in messages %}<p class="bg-success p-3 text-white">{{ m }}</p>{% endfor %}
   {% endif %}
+  <div class="d-flex align-items-center">
+    <div class="col-6 text-center p-5">
+      <h3>The Future is Sustainable</h3>
+      <p>
+        We’re building a world powered by solar energy, running on batteries and transported by electric vehicles. Explore the most recent impact of our products, people and supply chain.
+      </p>
+      <button>Explore Impact</button>
+    </div>
+    <div class="col-6">
+      <img src="{% static 'images/showroom.jpg' %}"
+           alt="Showroom Image"
+           style="width: 100%">
+    </div>
+  </div>
   <div class="d-flex flex-wrap gap-3 justify-content-center mt-5">
     <a class="btn btn-small btn-warning"
        href="{% url 'filtered_cars_all' %}">All</a>
